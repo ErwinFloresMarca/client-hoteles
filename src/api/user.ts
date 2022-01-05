@@ -3,26 +3,19 @@ import { ObjTy } from '@/types/common'
 
 export function loginReq(data: ObjTy) {
   return request({
-    url: '/ty-user/user/loginValid',
+    url: '/users/login',
     data,
     method: 'post',
     bfLoading: false,
-    isParams: true,
+    isParams: false,
     isAlertErrorMsg: false
   })
 }
 
 export function getInfoReq() {
   return request({
-    url: '/ty-user/user/getUserInfo',
+    url: '/users/me',
     bfLoading: false,
-    method: 'post'
-  })
-}
-
-export function logoutReq() {
-  return request({
-    url: '/ty-user/user/loginOut',
-    method: 'post'
+    method: 'get'
   })
 }

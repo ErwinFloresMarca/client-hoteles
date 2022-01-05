@@ -38,12 +38,12 @@ function filterRouterByCodeArr(codeArr: Array<number>, asyncRoutes: RouterTy): P
 
 /**
  * Use meta.role to determine if the current user has permission
- * @param roles
+ * @param role
  * @param route
  */
-function hasPermission(roles: Array<string>, route: RouteItemTy) {
+function hasPermission(role: string, route: RouteItemTy) {
   if (route.meta && route.meta.roles) {
-    return roles.some((role) => route.meta?.roles?.includes(role))
+    return route.meta?.roles?.includes(role)
   } else {
     return true
   }
@@ -52,15 +52,15 @@ function hasPermission(roles: Array<string>, route: RouteItemTy) {
 /**
  * Filter asynchronous routing tables by recursion
  * @param routes asyncRoutes
- * @param roles
+ * @param role
  */
-export function filterAsyncRoutes(routes: RouterTy, roles: Array<string>) {
+export function filterAsyncRoutes(routes: RouterTy, role: string) {
   const res: RouterTy = []
   routes.forEach((route) => {
     const tmp = { ...route }
-    if (hasPermission(roles, tmp)) {
+    if (hasPermission(role, tmp)) {
       if (tmp.children) {
-        tmp.children = filterAsyncRoutes(tmp.children, roles)
+        tmp.children = filterAsyncRoutes(tmp.children, role)
       }
       res.push(tmp)
     }
@@ -76,15 +76,16 @@ const state: PermissionTy = {
 }
 
 const actions = {
-  generateRoutes({ commit }: ObjTy, roles: Array<string>) {
+  generateRoutes({ commit }: ObjTy, role: string) {
+    console.log('permission action conmit: ', commit)
     return new Promise(async (resolve) => {
       let accessedRoutes
-      if (settings.permissionMode === 'roles') {
+      if (settings.permissionMode === 'role') {
         //filter by role
-        if (roles.includes('admin')) {
+        if (role === 'admin') {
           accessedRoutes = asyncRoutes || []
         } else {
-          accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
+          accessedRoutes = filterAsyncRoutes(asyncRoutes, role)
         }
       } else {
         //filter by codeArr

@@ -5,30 +5,28 @@ import { getToken, setToken } from '@/utils/auth'
 import { AxiosConfigTy, AxiosReqTy } from '@/types/common'
 let requestData: any
 let loadingE: any
-
 const service: any = axios.create({
-  // baseURL: process.env.VUE_APP_BASE_URL,
-  // timeout: 30000 // 超时时间
+  baseURL: import.meta.env.VITE_API_REST_BASE_URL ? (import.meta.env.VITE_API_REST_BASE_URL as string) : '',
+  timeout: 30000 // 超时时间
 })
 // 请求拦截
 service.interceptors.request.use(
   (request: AxiosReqTy) => {
     // console.log('request', request)
     // token配置
-    request.headers['AUTHORIZE_TOKEN'] = getToken()
+    request.headers['Authorization'] = `Bearer ${getToken()}`
     /* 下载文件*/
     if (request.isDownLoadFile) {
       request.responseType = 'blob'
     }
     if (request.isUploadFile) {
-      console.log('上传的是文件', request)
       request.headers['Content-Type'] = 'multipart/form-data'
     }
     requestData = request
     if (request.bfLoading) {
       loadingE = ElLoading.service({
         lock: true,
-        text: '数据载入中',
+        text: 'Cargando',
         spinner: 'el-icon-ElLoading',
         background: 'rgba(0, 0, 0, 0.1)'
       })
@@ -49,7 +47,8 @@ service.interceptors.request.use(
 // 响应拦截
 service.interceptors.response.use(
   (res: any) => {
-    console.log('res', res)
+    // console.log('res', res)
+    res.data.statusCode = res.status
     if (requestData.afHLoading && loadingE) {
       loadingE.close()
     }
@@ -57,12 +56,12 @@ service.interceptors.response.use(
     if (requestData.isDownLoadFile) {
       return res.data
     }
-    const { flag, msg, isNeedUpdateToken, updateToken } = res.data
+    const { statusCode, msg, isNeedUpdateToken, updateToken } = res.data
     //更新token保持登录状态
     if (isNeedUpdateToken) {
       setToken(updateToken)
     }
-    if (flag) {
+    if (statusCode >= 200 && statusCode < 300) {
       return res.data
     } else {
       if (requestData.isAlertErrorMsg) {
@@ -81,9 +80,9 @@ service.interceptors.response.use(
     if (loadingE) loadingE.close()
     if (err && err.response && err.response.code) {
       if (err.response.code === 403) {
-        ElMessageBox.confirm('请重新登录', {
-          confirmButtonText: '重新登录',
-          cancelButtonText: '取消',
+        ElMessageBox.confirm('No Cuenta Con losPermisos para realizar esta acción', {
+          confirmButtonText: 'Aceptar',
+          cancelButtonText: 'Cancelar',
           type: 'warning'
         }).then(() => {
           store.dispatch('user/resetToken').then(() => {
@@ -131,7 +130,7 @@ export default function khReqMethod({
     isUploadFile: isUploadFile ?? false,
     isDownLoadFile: isDownLoadFile ?? false,
     isAlertErrorMsg: isAlertErrorMsg,
-    baseURL: baseURL ?? import.meta.env.VITE_APP_BASE_URL,
+    baseURL: baseURL ?? import.meta.env.VITE_API_REST_BASE_URL,
     timeout: timeout ?? 15000
   })
 }

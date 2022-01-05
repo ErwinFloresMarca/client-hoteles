@@ -60,7 +60,7 @@ watch(
   { immediate: true }
 )
 onMounted(() => {
-  console.log(proxy.$route)
+  // console.log(proxy.$route)
 })
 onBeforeMount(() => {
   getBreadcrumb()

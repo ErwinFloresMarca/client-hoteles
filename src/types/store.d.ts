@@ -8,9 +8,15 @@ interface StateTy {
 }
 
 interface UserTy {
-  username: string
+  id: string
+  nombreUsuario: string
+  nombreCompleto: string
+  estado: boolean
+  email; string
   avatar: string
-  roles: Array<string>
+  role: string
+  fechaCreacion: Date
+  token: string
 }
 
 interface AppTy {

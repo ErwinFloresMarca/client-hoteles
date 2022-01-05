@@ -4,7 +4,7 @@ const mixin = {
     // 密码必须为6-18位字母、数字
     let passwordValid = (rule, value, callback) => {
       if (!/^(?![^a-zA-Z]+$)(?!\D+$)/.test(value)) {
-        callback(new Error('6-18位字母、数字'))
+        callback(new Error('6-18 caracteres alfanuméricos'))
       } else {
         callback()
       }
@@ -12,7 +12,7 @@ const mixin = {
     // 大于0的整数
     let upZeroInt = (rule, value, callback) => {
       if (!/^\+?[1-9]\d*$/.test(value)) {
-        callback(new Error('大于0的整数'))
+        callback(new Error('Un entero mayor que 0'))
       } else {
         callback()
       }
@@ -22,7 +22,7 @@ const mixin = {
         callback()
       } else {
         if (!/^\+?[1-9]\d*$/.test(value)) {
-          callback(new Error('大于0的整数'))
+          callback(new Error('Un entero mayor que 0'))
         } else {
           callback()
         }
@@ -30,7 +30,7 @@ const mixin = {
     }
     let validatePass = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请输入密码'))
+        callback(new Error('Introduzca una contraseña'))
       } else {
         callback()
       }
@@ -49,19 +49,19 @@ const mixin = {
       searchFormMixin: {},
       /* 表单校验*/
       formRulesMixin: {
-        isNotNull: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
-        isNotNullSecond: [{ required: true, message: '不能为空', trigger: 'blur' }],
+        isNotNull: [{ required: true, message: 'Este campo no puede estar vacio', trigger: 'blur' }],
+        isNotNullSecond: [{ required: true, message: 'Este campo no puede estar vacio', trigger: 'blur' }],
         mLength8: [
-          { required: true, message: '该字段不能为空', trigger: 'blur' },
-          { max: 8, message: '最长为8个字符', trigger: 'blur' }
+          { required: true, message: 'Este campo es obligatorio.', trigger: 'blur' },
+          { max: 8, message: 'Debe contener 8 caracteres como minimo', trigger: 'blur' }
         ],
         minLength7: [
-          { required: true, message: '该字段不能为空', trigger: 'blur' },
-          { min: 7, message: '最小7个字符', trigger: 'blur' }
+          { required: true, message: 'Este campo es obligatorio.', trigger: 'blur' },
+          { min: 7, message: 'Debe contener 7 caracteres como minimo', trigger: 'blur' }
         ],
         length17: [
-          { required: true, message: '该字段不能为空', trigger: 'blur' },
-          { min: 17, max: 17, message: '长度为17个字符', trigger: 'blur' }
+          { required: true, message: 'Este campo es obligatorio.', trigger: 'blur' },
+          { min: 17, max: 17, message: 'Debe contener 17 caracteres', trigger: 'blur' }
         ],
         desc: [{ validator: validatePass, trigger: 'blur' }],
         upZeroInt: [{ validator: upZeroInt, trigger: 'blur' }],
@@ -77,7 +77,7 @@ const mixin = {
       startEndArrMixin: [],
       startEndArrSubMixin: [],
       /* dialog相关*/
-      dialogTitleMixin: '添加',
+      dialogTitleMixin: 'Aumentar',
       detailDialogMixin: false,
       isDialogEditMixin: false,
       dialogVisibleMixin: false,
@@ -142,7 +142,7 @@ const mixin = {
     elLoadingMixin() {
       this.loadingIdMixin = this.$loading({
         lock: true,
-        text: '数据载入中',
+        text: 'Cargando...',
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.1)'
       })
@@ -157,8 +157,8 @@ const mixin = {
     elNotifyMixin(message, type, title, duration) {
       type = type || 'success'
       this.$notify[type]({
-        title: title || '提示',
-        message: message || '请传入提示消息',
+        title: title || 'Error Inesperado',
+        message: message || 'Por favor, pase un mensaje de aviso',
         position: 'top-right',
         duration: duration || 2500,
         offset: 40
@@ -171,9 +171,9 @@ const mixin = {
     * return Promise
     * */
     elConfirmNoCancelBtnMixin(title, message) {
-      return this.$confirm(message || '你确定要删除吗', title || '确认框', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      return this.$confirm(message || '¿Está seguro de que desea eliminarlo?', title || 'Confirmación', {
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
         showCancelButton: false,
         type: 'warning'
       }).catch(() => {})
@@ -185,9 +185,9 @@ const mixin = {
      * return Promise
      * */
     elConfirmMixin(title, message) {
-      return this.$confirm(message || '你确定要删除吗', title || '确认框', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      return this.$confirm(message || '你确定要删除¿Está seguro de que desea eliminarlo?吗', title || 'Confirmación', {
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
         type: 'warning'
       })
     }

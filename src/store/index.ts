@@ -8,7 +8,7 @@ for (const path in modulesFiles) {
   const moduleName = path.replace(/(.*\/)*([^.]+).*/gi, '$2')
   modules[moduleName] = modulesFiles[path].default
 }
-console.log('modules', modules)
+// console.log('modules', modules)
 //复杂的方式
 // const modulesFiles = import.meta.globEager('./modules/*.js')
 // console.log(Object.keys(modulesFiles));

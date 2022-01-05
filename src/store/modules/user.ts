@@ -1,26 +1,48 @@
-import { loginReq, logoutReq, getInfoReq } from '@/api/user'
-import { setToken, removeToken } from '@/utils/auth'
+import { loginReq, getInfoReq } from '@/api/user'
+import { setToken, removeToken, getToken } from '@/utils/auth'
 import { ObjTy } from '@/types/common'
 import { UserTy } from '@/types/store'
-//token: getToken(),
 
 const getDefaultState = () => {
   return {
-    //token: getToken(),
-    username: '',
+    token: getToken(),
+    id: '',
+    nombreUsuario: '',
+    nombreCompleto: '',
+    email: '',
+    estado: false,
     avatar: '',
-    roles: []
+    fechaCreacion: new Date(),
+    role: ''
   }
 }
 
 const state = getDefaultState()
 
 const mutations = {
-  M_username: (state: UserTy, username: string) => {
-    state.username = username
+  M_id: (state: UserTy, id: string) => {
+    state.id = id
   },
-  M_roles: (state: UserTy, roles: Array<string>) => {
-    state.roles = roles
+  M_nombreUsuario: (state: UserTy, nombreUsuario: string) => {
+    state.nombreUsuario = nombreUsuario
+  },
+  M_avatar: (state: UserTy, avatar: string) => {
+    state.avatar = avatar
+  },
+  M_fechaCreacion: (state: UserTy, fechaCreacion: Date) => {
+    state.fechaCreacion = fechaCreacion
+  },
+  M_email: (state: UserTy, email: string) => {
+    state.email = email
+  },
+  M_estado: (state: UserTy, estado: boolean) => {
+    state.estado = estado
+  },
+  M_nombreCompleto: (state: UserTy, nombreCompleto: string) => {
+    state.nombreCompleto = nombreCompleto
+  },
+  M_role: (state: UserTy, role: string) => {
+    state.role = role
   }
 }
 
@@ -31,9 +53,10 @@ const actions = {
     return new Promise((resolve, reject) => {
       loginReq(data)
         .then((res: ObjTy) => {
-          if (res.code === 20000) {
+          if (res.statusCode === 200) {
             //commit('SET_Token', res.data?.jwtToken)
-            setToken(res.data?.jwtToken)
+
+            setToken(res.token)
             resolve(null)
           } else {
             reject(res)
@@ -49,21 +72,20 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfoReq()
         .then((response: ObjTy) => {
-          const { data } = response
+          const data = response
           if (!data) {
             return reject('Verification failed, please Login again.')
           }
-          //此处模拟数据
-          const rolesArr: any = localStorage.getItem('roles')
-          if (rolesArr) {
-            data.roles = JSON.parse(rolesArr)
-          } else {
-            data.roles = ['admin']
-            localStorage.setItem('roles', JSON.stringify(data.roles))
-          }
-          const { roles, username } = data
-          commit('M_username', username)
-          commit('M_roles', roles)
+
+          const { role, nombreUsuario, nombreCompleto, id, avatar, estado, fechaCreacion, email } = data
+          commit('M_nombreUsuario', nombreUsuario)
+          commit('M_nombreCompleto', nombreCompleto)
+          commit('M_id', id)
+          commit('M_avatar', avatar)
+          commit('M_estado', estado)
+          commit('M_fechaCreacion', new Date(fechaCreacion))
+          commit('M_email', email)
+          commit('M_role', role)
           // commit('SET_AVATAR', avatar)
           resolve(data)
         })
@@ -74,16 +96,10 @@ const actions = {
   },
   // user logout
   logout() {
-    return new Promise((resolve, reject) => {
-      logoutReq()
-        .then(() => {
-          removeToken() // must remove  token  first
-          // resetRouter()
-          resolve(null)
-        })
-        .catch((error: any) => {
-          reject(error)
-        })
+    return new Promise((resolve) => {
+      removeToken() // must remove  token  first
+      // resetRouter()
+      resolve(null)
     })
   },
   // remove token

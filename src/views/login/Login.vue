@@ -4,12 +4,12 @@
       <div class="title-container">
         <h3 class="title text-center">{{ settings.title }}</h3>
       </div>
-      <el-form-item prop="username" :rules="formRulesMixin.isNotNull">
+      <el-form-item prop="email" :rules="formRulesMixin.isNotNull">
         <div class="rowSC">
           <span class="svg-container">
             <svg-icon icon-class="user" />
           </span>
-          <el-input v-model="formInline.username" placeholder="用户名(admin)" />
+          <el-input v-model="formInline.email" placeholder="Correo Electrónico" />
           <!--占位-->
           <div class="show-pwd" />
         </div>
@@ -27,7 +27,7 @@
             :type="passwordType"
             name="password"
             @keyup.enter="handleLogin"
-            placeholder="password(123456)"
+            placeholder="Contraseña"
           />
           <span class="show-pwd" @click="showPwd">
             <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
@@ -43,7 +43,6 @@
 </template>
 
 <script lang="ts">
-/*可以设置默认的名字*/
 export default {
   name: 'Login'
 }
@@ -59,8 +58,8 @@ import { ObjTy } from '@/types/common'
 let { proxy }: any = getCurrentInstance()
 //form
 let formInline = reactive({
-  username: 'admin',
-  password: '123456'
+  email: 'admin@admin.com',
+  password: '12345678'
 })
 let state: ObjTy = reactive({
   otherQuery: {},
@@ -110,7 +109,7 @@ let loginReq = () => {
   store
     .dispatch('user/login', formInline)
     .then(() => {
-      ElMessage({ message: '登录成功', type: 'success' })
+      ElMessage({ message: 'Sesión iniciada exitosamente.', type: 'success' })
       proxy.$router.push({ path: state.redirect || '/', query: state.otherQuery })
     })
     .catch((res) => {

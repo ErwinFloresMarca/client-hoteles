@@ -2,7 +2,7 @@
     "name": "vue3-admin-ts",
     "version": "1.2.3",
     "license": "ISC",
-    "author": "kuanghua(869653722@qq.com)",
+    "author": "erwin flores(ramiromarca6@gmail.com)",
     "scripts": {
         "dev": "vite --mode serve-dev --host",
         "build": "vite build --mode build",
@@ -37,7 +37,6 @@
         "@types/lodash": "^4.14.170",
         "@types/marked": "^2.0.3",
         "@types/mockjs": "^1.0.3",
-        "@types/node": "^15.0.1",
         "@types/qrcode": "^1.4.0",
         "@types/sortablejs": "^1.10.6",
         "@types/vuedraggable": "^2.24.0",

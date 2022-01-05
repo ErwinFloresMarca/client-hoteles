@@ -17,7 +17,7 @@ interface SettingTy {
 }
 
 const setting: SettingTy = {
-  title: 'Vue3 Admin Ts',
+  title: 'Hostal Tukos',
   /**
    * @type {boolean} true | false
    * @description Whether fix the header
@@ -82,7 +82,7 @@ const setting: SettingTy = {
   /**
    * @type {string} 'roles' | 'code'
    */
-  permissionMode: 'roles'
+  permissionMode: 'role'
 }
 
 export default setting
