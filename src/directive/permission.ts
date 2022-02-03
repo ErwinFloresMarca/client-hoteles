@@ -2,21 +2,19 @@ import store from '@/store'
 
 function checkPermission(el: any, binding: any) {
   const { value } = binding
-  const roles = store.state.user.roles
+  const role = store.state.user.role
 
   if (value && value instanceof Array) {
     if (value.length > 0) {
       const permissionRoles = value
-      const hasPermission = roles.some((role: string) => {
-        return permissionRoles.includes(role)
-      })
+      const hasPermission = permissionRoles.includes(role)
 
       if (!hasPermission) {
         el.parentNode && el.parentNode.removeChild(el)
       }
     }
   } else {
-    throw new Error(`need roles! Like v-permission="['admin','editor']"`)
+    throw new Error(`necesita roles como v-permission="['admin','user']"`)
   }
 }
 
