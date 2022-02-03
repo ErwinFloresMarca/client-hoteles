@@ -17,6 +17,15 @@ const mixin = {
         callback()
       }
     }
+    let cantBeBlanck = (rule, value, callback) => {
+      if (!value) {
+        console.log('campo vacio')
+        callback(new Error('Este campo no puede estar vacio'))
+      } else {
+        if (value.length == 0) callback(new Error('Este campo no puede estar vacio'))
+        else callback()
+      }
+    }
     let upZeroIntCanNull = (rule, value, callback) => {
       if (!value) {
         callback()
@@ -64,6 +73,10 @@ const mixin = {
           { min: 17, max: 17, message: 'Debe contener 17 caracteres', trigger: 'blur' }
         ],
         desc: [{ validator: validatePass, trigger: 'blur' }],
+        cantBeBlanck: [
+          { required: true, message: 'Este campo no puede estar vacio', trigger: 'blur' },
+          { validator: cantBeBlanck, trigger: 'blur' }
+        ],
         upZeroInt: [{ validator: upZeroInt, trigger: 'blur' }],
         upZeroIntCanNull: [{ validator: upZeroIntCanNull, trigger: 'blur' }],
         passwordValid: [{ validator: passwordValid, trigger: 'blur' }]

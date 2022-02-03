@@ -13,8 +13,8 @@ import { AxiosRequestConfig } from 'axios'
 interface AxiosReqTy extends AxiosRequestConfig {
   url?: string
   method?: string
+  params?: ObjTy
   data?: ObjTy
-  isParams?: boolean
   bfLoading?: boolean
   afHLoading?: boolean
   isUploadFile?: boolean
@@ -26,8 +26,8 @@ interface AxiosReqTy extends AxiosRequestConfig {
 interface AxiosConfigTy {
   url?: string
   method?: string
+  params?: ObjTy
   data?: ObjTy
-  isParams?: boolean
   bfLoading?: boolean
   afHLoading?: boolean
   isUploadFile?: boolean

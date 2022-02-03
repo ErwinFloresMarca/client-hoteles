@@ -4,15 +4,32 @@
       <div class="title-container">
         <h3 class="title text-center">{{ settings.title }}</h3>
       </div>
+      <el-form-item prop="nombreUsuario" :rules="formRulesMixin.isNotNull">
+        <el-input
+          ref="refNombreUsuario"
+          v-model="formInline.nombreUsuario"
+          type="text"
+          name="nombreUsuario"
+          placeholder="Nombre de Usuario"
+        />
+      </el-form-item>
+      <el-form-item prop="nombreCompleto" :rules="formRulesMixin.isNotNull">
+        <el-input
+          ref="refNombreCompleto"
+          v-model="formInline.nombreCompleto"
+          type="text"
+          name="nombreCompleto"
+          placeholder="Nombre de Usuario"
+        />
+      </el-form-item>
       <el-form-item prop="email" :rules="formRulesMixin.isNotNull">
-        <div class="rowSC">
-          <span class="svg-container">
-            <svg-icon icon-class="user" />
-          </span>
-          <el-input v-model="formInline.email" placeholder="Correo Electrónico" />
-          <!--占位-->
-          <div class="show-pwd" />
-        </div>
+        <el-input
+          ref="refEmail"
+          v-model="formInline.email"
+          type="email"
+          name="email"
+          placeholder="Correo Electrónico"
+        />
       </el-form-item>
       <!--<el-form-item prop="password" :rules="formRulesMixin.passwordValid">-->
       <el-form-item prop="password" :rules="formRulesMixin.isNotNull">
@@ -26,7 +43,6 @@
             v-model="formInline.password"
             :type="passwordType"
             name="password"
-            @keyup.enter="handleLogin"
             placeholder="Contraseña"
           />
           <span class="show-pwd" @click="showPwd">
@@ -34,25 +50,45 @@
           </span>
         </div>
       </el-form-item>
-      <div class="tip-message">{{ tipMessage }}</div>
-      <el-button :loading="loading" type="primary" class="login-btn" size="medium" @click.prevent="handleLogin">
-        Login
-      </el-button>
-      <div>
-        <span class="text">No cuenta con un usuario?</span>
-        <br />
-        <el-link type="success" :underline="false" href="/#/sign-up">Registrar usuario de tipo Recepcionista</el-link>
-        <el-link type="success" :underline="false" href="/#/sign-up?role=admin">
-          Registrar usuario de tipo Administrador
-        </el-link>
-      </div>
+      <el-form-item
+        prop="passwordConfirm"
+        :rules="[...formRulesMixin.isNotNull, { validator: passwordConfirmValid, trigger: 'blur' }]"
+      >
+        <div class="rowSC">
+          <span class="svg-container">
+            <svg-icon icon-class="password" />
+          </span>
+          <el-input
+            :key="passwordType"
+            ref="refPasswordConfirm"
+            v-model="formInline.passwordConfirm"
+            :type="passwordType"
+            name="passwordConfirm"
+            @keyup.enter="signUpHandle"
+            placeholder="Repita la Contraseña"
+          />
+          <span class="show-pwd" @click="showPwd">
+            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+          </span>
+        </div>
+      </el-form-item>
+      <el-row :gutter="20">
+        <el-col :span="12" :offset="0">
+          <el-button type="danger" class="login-btn" size="medium" @click.prevent="cancelhandle">Cancelar</el-button>
+        </el-col>
+        <el-col :span="12" :offset="0">
+          <el-button :loading="loading" type="primary" class="login-btn" size="medium" @click.prevent="signUpHandle">
+            Registrarse
+          </el-button>
+        </el-col>
+      </el-row>
     </el-form>
   </div>
 </template>
 
 <script lang="ts">
 export default {
-  name: 'Login'
+  name: 'SignUp'
 }
 </script>
 
@@ -61,13 +97,17 @@ import { reactive, getCurrentInstance, watch, ref } from 'vue'
 import settings from '@/settings'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
-import { ElMessage } from 'element-plus'
 import { ObjTy } from '@/types/common'
+import { UserResource } from '@/api/user'
+import { ElMessage } from 'element-plus'
 let { proxy }: any = getCurrentInstance()
 //form
 let formInline = reactive({
-  email: 'admin@admin.com',
-  password: '12345678'
+  nombreUsuario: '',
+  nombreCompleto: '',
+  email: '',
+  password: '',
+  passwordConfirm: ''
 })
 let state: ObjTy = reactive({
   otherQuery: {},
@@ -100,32 +140,31 @@ watch(
  *  login relative
  * */
 let loading = ref(false)
-let tipMessage = ref('')
 const store = useStore()
-let handleLogin = () => {
+let signUpHandle = () => {
   let refloginForm = ''
   proxy.$refs['refloginForm'].validate((valid: boolean) => {
     if (valid) {
-      loginReq()
+      signUpReq()
     } else {
       return false
     }
   })
 }
-let loginReq = () => {
+let cancelhandle = () => {
+  proxy.$router.push({ path: '/login' })
+}
+let signUpReq = () => {
   loading.value = true
-  store
-    .dispatch('user/login', formInline)
-    .then(() => {
-      ElMessage({ message: 'Sesión iniciada exitosamente.', type: 'success' })
-      proxy.$router.push({ path: state.redirect || '/', query: state.otherQuery })
+  console.log('send data to server')
+  UserResource.signup({ ...formInline, passwordConfirm: undefined }, !!state.otherQuery.role).then((resp: any) => {
+    ElMessage({
+      message: `El suaurio ${resp.nombreCompleto} fue creado exitosamente, para inciar sesion un administrador debe aprobar su registro.`,
+      type: 'success',
+      duration: 5000
     })
-    .catch((res) => {
-      tipMessage.value = res.msg
-      proxy.sleepMixin(30).then(() => {
-        loading.value = false
-      })
-    })
+    proxy.$router.push({ path: '/login' })
+  })
 }
 
 /*
@@ -142,6 +181,16 @@ let showPwd = () => {
   proxy.$nextTick(() => {
     refPassword.value.focus()
   })
+}
+/*
+ * pasword confirm valid
+ * */
+let passwordConfirmValid = (rule: any, value: string, cb: (error?: Error) => true) => {
+  if (value !== formInline.password) {
+    cb(new Error('No es igual que la contraseña'))
+  } else {
+    cb()
+  }
 }
 </script>
 
@@ -194,11 +243,6 @@ $light_gray: #eee;
   color: $dark_gray;
   cursor: pointer;
   text-align: center;
-}
-
-.text {
-  color: $light_gray;
-  font-size: 17px;
 }
 </style>
 

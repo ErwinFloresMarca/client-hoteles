@@ -56,7 +56,7 @@ const actions = {
           if (res.statusCode === 200) {
             //commit('SET_Token', res.data?.jwtToken)
 
-            setToken(res.token)
+            setToken(res.data.token)
             resolve(null)
           } else {
             reject(res)
@@ -72,7 +72,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfoReq()
         .then((response: ObjTy) => {
-          const data = response
+          const data = response.data
           if (!data) {
             return reject('Verification failed, please Login again.')
           }

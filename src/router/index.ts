@@ -1,6 +1,8 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Layout from '@/layout'
 import { RouterTy } from '@/types/router'
+import UserRoute from './modules/user'
+import AdministracionRoute from './modules/administracion'
 
 export const constantRoutes: RouterTy = [
   {
@@ -17,6 +19,11 @@ export const constantRoutes: RouterTy = [
   {
     path: '/login',
     component: () => import('@/views/login/Login.vue'),
+    hidden: true
+  },
+  {
+    path: '/sign-up',
+    component: () => import('@/views/user/SignUp.vue'),
     hidden: true
   },
   {
@@ -48,7 +55,11 @@ export const constantRoutes: RouterTy = [
  * asyncRoutes
  * the routes that need to be dynamically loaded based on user roles
  */
-export const asyncRoutes: RouterTy = [{ path: '/:pathMatch(.*)', redirect: '/404', hidden: true }]
+export const asyncRoutes: RouterTy = [
+  UserRoute,
+  AdministracionRoute,
+  { path: '/:pathMatch(.*)', redirect: '/404', hidden: true }
+]
 
 const router = createRouter({
   history: createWebHashHistory(),

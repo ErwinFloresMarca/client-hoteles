@@ -34,10 +34,6 @@ service.interceptors.request.use(
     /*
      *params会拼接到url上
      * */
-    if (request.isParams) {
-      request.params = request.data
-      request.data = {}
-    }
     return request
   },
   (err: any) => {
@@ -48,7 +44,10 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   (res: any) => {
     // console.log('res', res)
-    res.data.statusCode = res.status
+    res.data = {
+      data: res.data,
+      statusCode: res.status
+    }
     if (requestData.afHLoading && loadingE) {
       loadingE.close()
     }
@@ -78,9 +77,9 @@ service.interceptors.response.use(
   },
   (err: any) => {
     if (loadingE) loadingE.close()
-    if (err && err.response && err.response.code) {
+    if (err && err.response && err.response.status) {
       if (err.response.code === 403) {
-        ElMessageBox.confirm('No Cuenta Con losPermisos para realizar esta acción', {
+        ElMessageBox.confirm('No Cuenta Con los Permisos para realizar esta acción', {
           confirmButtonText: 'Aceptar',
           cancelButtonText: 'Cancelar',
           type: 'warning'
@@ -91,7 +90,7 @@ service.interceptors.response.use(
         })
       } else {
         ElMessage({
-          message: err,
+          message: err.response.data.error.message,
           type: 'error',
           duration: 2 * 1000
         })
@@ -109,9 +108,9 @@ service.interceptors.response.use(
 
 export default function khReqMethod({
   url,
-  data,
   method,
-  isParams,
+  params,
+  data,
   bfLoading,
   afHLoading,
   isUploadFile,
@@ -123,8 +122,8 @@ export default function khReqMethod({
   return service({
     url: url,
     method: method ?? 'post',
+    params: params ?? {},
     data: data ?? {},
-    isParams: isParams ?? false,
     bfLoading: bfLoading ?? false,
     afHLoading: afHLoading ?? true,
     isUploadFile: isUploadFile ?? false,

@@ -10,8 +10,8 @@ app.use(store)
 //import element-plus
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
-import zhCn from 'element-plus/es/locale/lang/zh-cn'
-app.use(ElementPlus, { size: 'mini', locale: zhCn })
+import es from 'element-plus/es/locale/lang/es'
+app.use(ElementPlus, { size: 'mini', locale: es })
 
 //global mixin
 import elementMixin from '@/mixins/elementMixin'

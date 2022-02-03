@@ -8,7 +8,7 @@ import 'nprogress/nprogress.css'
 import getPageTitle from '@/utils/getPageTitle'
 import { RouterRowTy } from '@/types/router'
 
-const whiteList = ['/login'] // no redirect whitelist
+const whiteList = ['/login', '/sign-up'] // no redirect whitelist
 router.beforeEach(async (to: any, from, next: any) => {
   // start progress bar
   if (settings.isNeedNprogress) NProgress.start()
@@ -21,7 +21,7 @@ router.beforeEach(async (to: any, from, next: any) => {
    * */
   const hasToken: string | null = settings.isNeedLogin ? getToken() : 'temp_token'
   if (hasToken) {
-    if (to.path === '/login') {
+    if (to.path === '/login' || to.path === '/sign-up') {
       // if is logged in, redirect to the home page
       next({ path: '/' })
     } else {

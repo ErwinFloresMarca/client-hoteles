@@ -76,8 +76,7 @@ const state: PermissionTy = {
 }
 
 const actions = {
-  generateRoutes({ commit }: ObjTy, role: string) {
-    console.log('permission action conmit: ', commit)
+  generateRoutes(state: ObjTy, role: string) {
     return new Promise(async (resolve) => {
       let accessedRoutes
       if (settings.permissionMode === 'role') {
