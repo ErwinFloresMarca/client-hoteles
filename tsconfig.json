@@ -10,6 +10,8 @@
       "esModuleInterop": true,
       "skipLibCheck": true,
       "lib": ["esnext", "dom","ES2015"],
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true,
       "types": ["vite/client"],
       "baseUrl": "./",
       "paths": {

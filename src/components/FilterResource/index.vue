@@ -1,5 +1,6 @@
 <template>
   <div class="filter-container">
+    <slot name="filter-options" />
     <el-input
       v-if="selectProperty.filterable"
       v-model="keyword"
@@ -124,7 +125,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .filter-item {
   width: 150px;
-  margin-right: 5px;
+  margin-left: 5px;
 }
 .filter-container {
   display: flex;

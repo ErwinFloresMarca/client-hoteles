@@ -1,8 +1,10 @@
 import { ICuadernoDeNovedades } from '@/types/apiResources'
 <template>
-  <div>
-    <cuaderno-de-novedades v-for="cuaderno in cuadernos" :key="cuaderno.id" :cuaderno="cuaderno" @change="onChange" />
-  </div>
+  <el-row :gutter="15">
+    <el-col v-for="cuaderno in cuadernos" :key="cuaderno.id" :span="24" :sm="12" :md="8" :offset="0">
+      <cuaderno-de-novedades :cuaderno="cuaderno" @change="onChange" />
+    </el-col>
+  </el-row>
 </template>
 <script lang="ts">
 import { computed, PropType } from 'vue-demi'

@@ -25,13 +25,23 @@
         </span>
       </div>
     </template>
-    <novedad v-for="(n, i) in cdn.novedades" :key="i" v-model:novedad="cdn.novedades[i]" />
+    <novedad
+      v-for="(n, i) in cdn.novedades"
+      :key="i"
+      v-model:novedad="cdn.novedades[i]"
+      :editable="editable"
+      @change="onChange"
+      @delete="onDeleteNovedad(n, i)"
+    />
+    <el-button v-if="editable" style="width: 100%" type="success" size="mini" @click="onNewNovedad" :icon="Plus" />
   </el-card>
 </template>
 <script lang="ts">
 import { computed, PropType } from 'vue'
-import { ICuadernoDeNovedades } from '@/types/apiResources'
+import { ICuadernoDeNovedades, INovedad } from '@/types/apiResources'
 import Novedad from './Novedad.vue'
+
+import { Plus } from '@element-plus/icons-vue'
 export default {
   components: { Novedad },
   name: 'CuadernoDeNovedades',
@@ -40,6 +50,10 @@ export default {
     cuaderno: {
       type: Object as PropType<ICuadernoDeNovedades>,
       required: true
+    },
+    editable: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props, { emit }) {
@@ -50,8 +64,24 @@ export default {
         emit('update:cuaderno', c)
       }
     })
+    const onNewNovedad = () => {
+      cdn.value.novedades.push({ detalle: '', importancia: 'info', fechaHora: new Date().toISOString() })
+      onChange
+    }
+    const onDeleteNovedad = (novedad: INovedad, index: number) => {
+      cdn.value.novedades = cdn.value.novedades.filter((n, i) => i != index)
+      onChange()
+    }
+    const onChange = () => {
+      emit('change', cdn.value)
+      emit('update:cuaderno', cdn.value)
+    }
     return {
-      cdn
+      cdn,
+      onNewNovedad,
+      onDeleteNovedad,
+      onChange,
+      Plus
     }
   }
 }
@@ -59,6 +89,6 @@ export default {
 <style lang="scss">
 .cuaderno-container {
   width: 100%;
-  margin: 10px;
+  margin: 5px;
 }
 </style>

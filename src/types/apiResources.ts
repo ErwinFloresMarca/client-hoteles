@@ -47,11 +47,11 @@ export interface ICuadernoDeNovedades {
   id?: string
   userId: string
   user?: any
-  novedades: Array<any>
-  fechaCreacion?: Date
+  novedades: Array<INovedad>
+  fechaCreacion?: string
 }
 export interface INovedad {
   detalle: string
   importancia: string
-  fechaHora?: Date
+  fechaHora?: string
 }

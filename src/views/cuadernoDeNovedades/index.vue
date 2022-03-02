@@ -1,6 +1,11 @@
 <template>
   <div>
     <Title title="Cuadernos De Novedades" />
+    <FilterResource :listProperties="properties" defaultProperty="fechaCreacion" @on-filter="onFilter">
+      <template #filter-options>
+        <el-button type="primary" :icon="Plus" size="mini" @click="onNew()">Nuevo</el-button>
+      </template>
+    </FilterResource>
     <div class="list-container">
       <list-cuaderno-novedades :list="cuadernos" />
       <Pagination
@@ -20,13 +25,15 @@ import { reactive, toRefs } from 'vue-demi'
 import { ObjTy } from '@/types/common'
 import { CuadernoDeNovedadResource } from '@/api/cuadernoDeNovedad'
 import ListCuadernoNovedades from './components/ListCuadernoNovedades.vue'
+import FilterResource from '@/components/FilterResource/index.vue'
 export default {
   name: 'CuadernoDeNovedades',
-  components: { Title, Pagination, ListCuadernoNovedades },
+  components: { Title, Pagination, ListCuadernoNovedades, FilterResource },
   setup() {
     const state = reactive<any>({
       selectCuaderno: undefined,
       cuadernos: [],
+      properties: [{ key: 'fechaCreacion', label: 'Fecha de Creación', filterable: false }],
       pagination: {
         total: 0,
         skip: 0,
