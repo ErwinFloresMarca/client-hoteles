@@ -11,14 +11,26 @@
         </el-table-column>
         <el-table-column v-for="prop in properties" :key="prop.key" :prop="prop.key" :label="prop.label">
           <template #default="scope">
-            <el-button
-              v-if="prop.key === 'estado'"
-              :type="scope.row.estado ? 'success' : 'danger'"
-              size="mini"
-              @click="onChangeState(scope.row.id, scope.row.estado)"
-            >
-              {{ scope.row.estado ? 'Activo' : 'Inactivo' }}
-            </el-button>
+            <template v-if="prop.key === 'estado'">
+              <el-button
+                v-if="scope.row.estado"
+                :key="`btn-s-${scope.row.id}`"
+                type="success"
+                size="mini"
+                @click="onChangeState(scope.row.id, scope.row.estado)"
+              >
+                {{ 'Activo' }}
+              </el-button>
+              <el-button
+                v-else
+                :key="`btn-d-${scope.row.id}`"
+                type="danger"
+                size="mini"
+                @click="onChangeState(scope.row.id, scope.row.estado)"
+              >
+                {{ 'Inactivo' }}
+              </el-button>
+            </template>
             <span v-else>
               {{ scope.row[prop.key] }}
             </span>
@@ -62,12 +74,25 @@ export default defineComponent({
       { key: 'estado', label: 'Estado', filterable: false },
       { key: 'fechaCreacion', label: 'Fecha de Creación', filterable: false }
     ]
+    const getList = () => {
+      loading.value = true
+      this.getCant()
+      UserResource.list({
+        ...this.filter,
+        limit: pagination.limit,
+        skip: pagination.skip * pagination.limit
+      }).then((resp: any) => {
+        users.value = resp.data
+        loading.value = false
+      })
+    }
     return {
       pagination,
       properties,
       users,
       loading,
       filter,
+      getList,
       Delete
     }
   },
@@ -85,18 +110,6 @@ export default defineComponent({
     onFilter(data: ObjTy) {
       this.filter = { where: {}, ...data }
       this.getList()
-    },
-    getList() {
-      this.loading = true
-      this.getCant()
-      UserResource.list({
-        ...this.filter,
-        limit: this.pagination.limit,
-        skip: this.pagination.skip * this.pagination.limit
-      }).then((resp: any) => {
-        this.users = resp.data
-        this.loading = false
-      })
     },
     getCant() {
       UserResource.count({

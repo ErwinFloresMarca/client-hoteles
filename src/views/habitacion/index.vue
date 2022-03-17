@@ -13,15 +13,15 @@
         </el-table-column>
         <el-table-column v-for="prop in properties" :key="prop.key" :prop="prop.key" :label="prop.label">
           <template #default="scope">
-            <el-button
-              v-if="prop.key === 'estado'"
-              :type="scope.row.estado ? 'success' : 'danger'"
-              size="mini"
-              @click="onChangeState(scope.row.id, scope.row.estado)"
-            >
+            <el-button v-if="prop.key === 'estado'" :type="scope.row.estado ? 'success' : 'danger'" size="mini">
+              <!-- 
+              @click="onChangeState(scope.row.id, scope.row.estado)" -->
               <!-- TODO: change manage estado habitaciones and Categoria -->
               {{ scope.row.estado ? 'Activo' : 'Inactivo' }}
             </el-button>
+            <span v-else-if="prop.key === 'categoria'">
+              {{ scope.row.categoria.descripcion }}
+            </span>
             <span v-else-if="prop.key === 'fechaCreacion'">
               {{ formatTime(scope.row[prop.key], '{d}/{m}/{y}') }}
             </span>

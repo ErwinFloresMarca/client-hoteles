@@ -15,11 +15,11 @@
           <template #default="scope">
             <el-button
               v-if="prop.key === 'estado'"
+              :key="`btn-state-${scope.row.estado ? 's' : 'd'}-${scope.row.id}`"
               :type="scope.row.estado ? 'success' : 'danger'"
               size="mini"
               @click="onChangeState(scope.row.id, scope.row.estado)"
             >
-              <!-- TODO: change manage estado -->
               {{ scope.row.estado ? 'Activo' : 'Inactivo' }}
             </el-button>
             <span v-else-if="prop.key === 'fechaCreacion'">
