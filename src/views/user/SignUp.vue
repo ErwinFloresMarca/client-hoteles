@@ -19,7 +19,7 @@
           v-model="formInline.nombreCompleto"
           type="text"
           name="nombreCompleto"
-          placeholder="Nombre de Usuario"
+          placeholder="Nombre Completo"
         />
       </el-form-item>
       <el-form-item prop="email" :rules="formRulesMixin.isNotNull">
